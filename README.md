@@ -6,9 +6,9 @@ The goal of this project is to keep the car driving in the middle of the road, b
 
 ---
 
-[MainCode]: https://github.com/dringakn/CarND-Advanced-Lane-Lines/blob/master/solution.ipynb
+[MainCode]: https://github.com/dringakn/CarND-PID-Control-Project/blob/master/src/main.cpp
 
-[PIDCode]: https://github.com/dringakn/CarND-Advanced-Lane-Lines/blob/master/solution.ipynb
+[PIDCode]: https://github.com/dringakn/CarND-PID-Control-Project/blob/master/src/PID.cpp
 
 [//]: # (Image References)
 
