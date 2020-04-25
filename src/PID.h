@@ -1,6 +1,8 @@
 #ifndef PID_H
 #define PID_H
 
+#include <math.h>
+
 class PID {
  public:
   /**
@@ -17,7 +19,7 @@ class PID {
    * Initialize PID.
    * @param (Kp_, Ki_, Kd_) The initial PID coefficients
    */
-  void Init(double Kp_, double Ki_, double Kd_);
+  void Init(double Kp_, double Ki_, double Kd_, double ILimit);
 
   /**
    * Update the PID error variables given cross track error.
@@ -45,6 +47,9 @@ class PID {
   double Kp;
   double Ki;
   double Kd;
+
+  // Integral wind-up limit
+  double i_limit;
 };
 
 #endif  // PID_H

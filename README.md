@@ -1,7 +1,19 @@
-# CarND-Controls-PID
-Self-Driving Car Engineer Nanodegree Program
+# Car Steering Angle Control Using PID-Controller
+![Example][video1]
+**Overview**
+
+The goal of this project is to keep the car driving in the middle of the road, between the middle of lanes. For the purpose of automatic car steering control, a classical PID control algorithm is implemented using C++. For the code implementation the reader may refer ![Main][MainCode] and ![PID][PIDCode]
 
 ---
+
+[MainCode]: https://github.com/dringakn/CarND-Advanced-Lane-Lines/blob/master/solution.ipynb
+
+[PIDCode]: https://github.com/dringakn/CarND-Advanced-Lane-Lines/blob/master/solution.ipynb
+
+[//]: # (Image References)
+
+<!-- [image1]: ./examples/.png "Image" -->
+[video1]: ./examples/Car_Steering_Angle_Control_Using_PID-Controller.gif "Video"
 
 ## Dependencies
 
@@ -23,10 +35,7 @@ Self-Driving Car Engineer Nanodegree Program
     cd uWebSockets
     git checkout e94b6e1
     ```
-    Some function signatures have changed in v0.14.x. See [this PR](https://github.com/udacity/CarND-MPC-Project/pull/3) for more details.
-* Simulator. You can download these from the [project intro page](https://github.com/udacity/self-driving-car-sim/releases) in the classroom.
-
-Fellow students have put together a guide to Windows set-up for the project [here](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/files/Kidnapped_Vehicle_Windows_Setup.pdf) if the environment you have set up for the Sensor Fusion projects does not work for this project. There's also an experimental patch for windows in this [PR](https://github.com/udacity/CarND-PID-Control-Project/pull/3).
+* Simulator. You can download these from the [project intro page](https://github.com/udacity/self-driving-car-sim/releases).
 
 ## Basic Build Instructions
 
@@ -35,64 +44,14 @@ Fellow students have put together a guide to Windows set-up for the project [her
 3. Compile: `cmake .. && make`
 4. Run it: `./pid`. 
 
-Tips for setting up your environment can be found [here](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/23d376c7-0195-4276-bdf0-e02f1f3c665d)
+## Reflection:
 
-## Editor Settings
+The response of the vehicle control depends on the parameters (Kp, Ki, Kd). In order to tune the values the parameters are passed as command line arguments.
 
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
-
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
-
-## Code Style
-
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
-
-## Project Instructions and Rubric
-
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
-
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/e8235395-22dd-4b87-88e0-d108c5e5bbf4/concepts/6a4d8d42-6a04-4aa6-b284-1697c0fd6562)
-for instructions and the project rubric.
-
-## Hints!
-
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
+Here are some guidlines for the tunning:
+ * The value of Kp react to the CTE (Cross Tracke Error), i.e. the vehicle offset from the middle of the lanes. The higher the value, the more stronger the car will react on the error. A too much higher value results into oscillatory behaviours.
+ * The value of Kd helps to supress the oscillations. The higher the value, the stronger it damps the oscillation. However, care must be taken in case the inputs are noise, which may leads to destablization.
+ * Only the values of Kp and Kd are not enought to bring the vehicle to steady state, i.e. the middle of the lanes. Th value of Ki help to bring it to center position. The  higher the value, the stronger it reacts. However, if the value is too high, it bring unstablity (Oscillatory behaviour).
+ * Another important parameters is the ILimit. This is to limit the error due to integration. Sometimes, it is also called integral wind-up error. In case if the error is keep-on increasing, it leads to unbounded growth of the error, which may takes a lot of time to come back to zero, therefor, may leads to unstability.
+ * Ofcourse, these values assumes that the response of our car remains same throughout it's life. However, in case of wear and tear and external disturbances (road/evniorment constions, winds, slippary road, snow etc). It's response must be tunned. Therefore, to overcome these limitations, one may use adaptive PID tunning parameters.
+ * Currently, the parameters are tunned by hit and trial method. First the Kp values are increased until a oscillatory response is observed, while keeping the other two to zero. Then the Kd value is increased until oscillatory response is damped while keeping the same Kp value. And finally, the Ki value is increased until stead-state error is minimized. For more information the reader may look at Ziegler Nichlos method for tunning.
